@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 import { Log4jsLogger } from '@nestx-log4js/core';
+import { addSalt } from './utils/encription';
 
 const listenPort = 3000;
 const logger = new Logger('main.ts');
@@ -32,7 +33,10 @@ const bootstrap = async () => {
   app.useLogger(app.get(Log4jsLogger));
 
   // console.log(`listen in http://localhost:${listenPort}`);
-  logger.log(`listen in http://localhost:${listenPort}`);
+  // logger.log(`listen in http://localhost:${listenPort}/swagger-ui`);
   await app.listen(listenPort);
 };
-bootstrap();
+bootstrap().then(() => {
+  addSalt();
+  logger.log(`listen in http://localhost:${listenPort}/swagger-ui`);
+});
