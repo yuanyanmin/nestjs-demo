@@ -11,14 +11,6 @@ import { Role } from '../role/role.decorator';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('regist')
-  @ApiOperation({
-    summary: '用户注册',
-  })
-  async registUser(@Body() userDto: User) {
-    return await this.userService.regist(userDto);
-  }
-
   @Get('hello')
   // @SetMetadata('roles', ['admin'])
   @Role('admin')
