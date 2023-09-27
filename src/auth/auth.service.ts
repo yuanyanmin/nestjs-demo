@@ -123,6 +123,26 @@ export class AuthService {
       });
   }
 
+  /**
+   * 用户修改方法
+   * @param user
+   * @returns
+   */
+  public async alter(user: User) {
+    return this.userService.findOneByPhone(user.phone).then(async () => {
+      return await this.userModel
+        .findOneAndUpdate({ phone: user.phone }, user, {})
+        .then(() => {
+          logger.log(`用户${user.phone}修改密码成功`);
+          this.response = {
+            code: 0,
+            msg: '用户修改信息成功',
+          };
+          return this.response;
+        });
+    });
+  }
+
   private async createToken(user: User) {
     return await this.jwtService.sign(user);
   }

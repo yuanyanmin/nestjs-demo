@@ -15,8 +15,4 @@ import { APP_GUARD } from '@nestjs/core';
   ],
   controllers: [UserController],
 })
-export class UserModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HashPasswordMiddleware).forRoutes('user/regist');
-  }
-}
+export class UserModule {}
