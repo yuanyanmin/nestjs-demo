@@ -9,8 +9,8 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('user')
 @ApiTags('用户模块')
 // @UseGuards(AuthGuard)
-@UseGuards(AuthGuard('jwt'))
-@ApiBearerAuth('jwt')
+// @UseGuards(AuthGuard('jwt'))
+// @ApiBearerAuth('jwt')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -22,6 +22,7 @@ export class UserController {
     summary: '测试hello',
   })
   async hello() {
-    return 'hello world';
+    // return 'hello world';
+    return this.userService.hello();
   }
 }
