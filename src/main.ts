@@ -40,6 +40,11 @@ const bootstrap = async () => {
    */
   app.useLogger(app.get(Log4jsLogger));
 
+  /**
+   * 允许跨域
+   */
+  app.enableCors();
+
   // console.log(`listen in http://localhost:${listenPort}`);
   // logger.log(`listen in http://localhost:${listenPort}/swagger-ui`);
   await app.listen(listenPort);

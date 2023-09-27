@@ -30,5 +30,9 @@ export class UserService {
 
   public async hello() {
     return await this.redis.set('management', 'hello world management');
+    // return {
+    //   code: 0,
+    //   msg: 'hello',
+    // };
   }
 }
