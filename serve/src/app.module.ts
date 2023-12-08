@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { User } from './modules/user/user.entity';
+// import { User } from './user/entities/user.entity';
 import { CategoryModule } from './category/category.module';
 import { ShopModule } from './shop/shop.module';
 import { UserModule } from './user/user.module';
@@ -9,10 +9,10 @@ import { UserModule } from './user/user.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '192.168.80.123',
+      host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '12345678',
+      password: '123456',
       database: 'nestjs_shop',
       // entities: [User],
       synchronize: true,
