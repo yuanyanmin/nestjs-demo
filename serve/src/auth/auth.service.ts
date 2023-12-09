@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  private logger = new Logger('AuthService')
+
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService
@@ -22,7 +24,7 @@ export class AuthService {
       }
     })
     if (found) {
-      throw new BadRequestException('账号已存在')
+      throw new InternalServerErrorException('账号已存在')
     }
 
     const salt = await bcrypt.genSalt()
@@ -35,7 +37,13 @@ export class AuthService {
     });
     user.createAt = new Date()
     user.updateAt = new Date()
-    return this.userRepository.save(user)
+    
+    try {
+      return this.userRepository.save(user)
+    } catch(error) {
+      this.logger.log(`Failed to register user: ${JSON.stringify(user)}`, error.stack)
+      throw new InternalServerErrorException('注册失败')
+    }
   }
 
   async login(data: loginDto) {
@@ -46,14 +54,14 @@ export class AuthService {
       }
     })
     if (!found) {
-      throw new BadRequestException('账号不存在')
+      throw new InternalServerErrorException('账号不存在')
     }
 
     const { password: hash, id } = found;
     const isMatch = await bcrypt.compare(password, hash)
 
     if (!isMatch) {
-      throw new BadRequestException('账号密码错误')
+      throw new InternalServerErrorException('账号密码错误')
     }
 
     return this.jwtService.sign({

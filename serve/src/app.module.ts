@@ -7,19 +7,29 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt.auth.guard';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configSchemaValidater } from './utils/validaters/config.schema';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'nestjs_shop',
-      // entities: [User],
-      synchronize: true,
-      autoLoadEntities: true
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.stage.local', `.env.stage.${process.env.STAGE}`, '.env.stage.default'],
+      validationSchema: configSchemaValidater
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        synchronize: configService.get('DB_SYNCHRONIZE'),
+        autoLoadEntities: true
+      })
     }),
     CategoryModule,
     ShopModule,
